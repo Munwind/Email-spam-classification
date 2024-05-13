@@ -14,4 +14,4 @@ data.Label = double(data.Label == 'spam'); % Encode 'spam' as 1 and 'ham' as 0
 % Split the data into training and testing
 split_data;
 
-disp(trainData(1:5, :));
+%disp(trainData(1:5, :));
