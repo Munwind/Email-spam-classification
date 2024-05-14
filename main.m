@@ -1,6 +1,6 @@
 % Load the dataset
 clear; clc;
-data = readtable('email.csv');
+data = readtable ('email.csv');
 
 % Preprocess the message text
 data.Message = lower(data.Message);
