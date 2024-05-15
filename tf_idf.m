@@ -4,7 +4,6 @@ function [frequency, dict] = tf_idf(data)
     % Initialize frequency and dict
     dict = {};
     frequency = [];
-
     for i = 1:n-1
         small_dict = processing_doc(data{i+1, 2});
         length_small_dict = length(small_dict{1});
@@ -22,15 +21,16 @@ function [frequency, dict] = tf_idf(data)
             index = find_word(word, dict);
             if index ~= -1
                 % If the word is already in the dictionary, update its frequency
-                frequency(i, index) = small_dict{2}(j);
+                frequency(end, index) = small_dict{2}(j);
             else
                 % If the word is not in the dictionary, add it
                 dict{end + 1} = word;
+                index = length(dict);
                 % Append a column of zeros to the frequency matrix for the new word
                 frequency = horzcat(frequency, zeros(size(frequency, 1), 1));
-                frequency(i, end) = small_dict{2}(j); % Set frequency of the new word
+                frequency(i, index) = small_dict{2}(j); % Set frequency of the new word
             end
         end
     end
+    frequency = frequency(:, 1:length(dict));
 end
-

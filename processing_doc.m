@@ -33,6 +33,6 @@ function [small_dict] = processing_doc(doc)
     endif
 
     % Normalize frequencies
-    small_dict{2} = small_dict{2} / num_of_word;
+    small_dict{2} = log(num_of_word ./ small_dict{2});
 endfunction
 

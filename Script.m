@@ -1,6 +1,5 @@
-function [data] = readtable(file)
-  pkg load io;
-  data = csv2cell('email.csv');
+% Read the CSV file into a cell array
+data = csv2cell('email.csv');
 
 % Extract the header row
 header = data(1, :);
@@ -16,4 +15,6 @@ end
 % Extract the "Message" column, skipping the header row
 message_column = data(2:end, message_col_index);
 
-endfunction
+% Display the "Message" column
+disp(message_column);
+
