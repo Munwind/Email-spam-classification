@@ -6,10 +6,10 @@ function [small_dict] = processing_doc(doc)
     for i = 1:n
         if doc(i) == " "
             if ~isempty(word)
-                num_of_word = num_of_word + 1;
+                num_of_word++;
                 index = find_word(word, small_dict{1});
-                if index ~= -1
-                    small_dict{2}(index)
+                if index = -1
+                    small_dict{2}(index)++;
                 else
                     small_dict{1}{end+1} = word; % Append word to the cell array
                     small_dict{2}(end+1) = 1;     % Append count (initialized to 1) to the array
@@ -22,10 +22,10 @@ function [small_dict] = processing_doc(doc)
             end
     % Handle the last word in the document
     if ~isempty(word)
-        num_of_word = num_of_word + 1;
+        num_of_word++;
         index = find_word(word, small_dict{1});
         if index ~= -1
-            small_dict{2}(index) = small_dict{2}{index} + 1;
+            small_dict{2}(index)++;
         else
             small_dict{1}{end+1} = word; % Append word to the cell array
             small_dict{2}(end+1) = 1;     % Append count (initialized to 1) to the array

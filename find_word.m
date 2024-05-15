@@ -5,7 +5,7 @@ function [index] = find_word(word, dict)
         if strcmp(word, dict{i}) == 1
             index = i;
             return;
-        endif
-    endfor
-endfunction
+        end
+    end
+end
 

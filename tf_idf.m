@@ -33,4 +33,5 @@ function [frequency, dict] = tf_idf(data)
         end
     end
     frequency = frequency(:, 1:length(dict));
+    disp(dict);
 end

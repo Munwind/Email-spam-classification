@@ -1,5 +1,5 @@
 % Read the CSV file into a cell array
-data = csv2cell('email.csv');
+%data = table2cell('email.csv');
 
 % Extract the header row
 header = data(1, :);
