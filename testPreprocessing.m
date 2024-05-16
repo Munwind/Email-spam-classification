@@ -3,12 +3,12 @@ fid = fopen('stopWords.txt', 'r');
 % Initialize an empty cell array to store stop words
 stopWords = {};
 
-% Read the file line by line
+% Read the file line by line 
 line = fgetl(fid);
 while ischar(line)
     stopWords{end+1} = line;
     line = fgetl(fid);
-end
+end % read stops words
 
 % Close the file
 fclose(fid);
@@ -33,6 +33,7 @@ stemList = {};
 suffix = {'sses', 'ies', 's', 'ness', 'ing', 'e', 'ed', 'ful', 'ment', 'able', 'ly', 'ible', 'tion', 'ative', 'est', 'ize', 'ise', 'al', 'sion', 'er', 'est'};
 prefix = {'sub', 'inter', 'semi', 'anti', 'over', 'under', 'bi', 'dis', 'pre', 're', 'mis'};
 
+%{
 for i = 1 : numel(data.TokenizedMessage)
     for j = 1 : numel(data.TokenizedMessage{i}) % Fix loop variable
         word = data.TokenizedMessage{i}{j};
@@ -51,6 +52,7 @@ for i = 1 : numel(data.TokenizedMessage)
         end
     end
 end
+%}
 
 if checkForStemming == 1
     disp("Stemming error");
