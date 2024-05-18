@@ -1,38 +1,33 @@
-function [frequency, dict] = tf_idf(data)
-    % Define the number of rows in the data matrix
-    n = length(data);
-    % Initialize frequency and dict
-    dict = {};
-    frequency = [];
-    for i = 1:n-1
-        small_dict = processing_doc(data{i+1, 2});
-        length_small_dict = length(small_dict{1});
+function [tfidfMatrix, dict] = tf_idf(data)
+    % Exclude the first row of data
+    data = data(2:end, :);
+    % Load the number of documents
+    numDocs = size(data, 1);
 
-        % Initialize frequency matrix if empty
-        if isempty(frequency)
-            frequency = zeros(1, length_small_dict);
-        else
-            % Add a new row with all zeros to the frequency matrix
-            frequency = vertcat(frequency, zeros(1, size(frequency, 2)));
-        end
+    % Create token cell array
+    allTokens = cell(numDocs, 1);
 
-        for j = 1:length_small_dict
-            word = small_dict{1}{j};
-            index = find_word(word, dict);
-            if index ~= -1
-                % If the word is already in the dictionary, update its frequency
-                frequency(end, index) = small_dict{2}(j);
-            else
-                % If the word is not in the dictionary, add it
-                dict{end + 1} = word;
-                index = length(dict);
-                % Append a column of zeros to the frequency matrix for the new word
-                frequency = horzcat(frequency, zeros(size(frequency, 1), 1));
-                frequency(i, index) = small_dict{2}(j); % Set frequency of the new word
-            end
-        end
-    end
+    % Each documents will be splited into tokens, which strsplit can be replaced with tokenize
+    for i = 1:numDocs
+      allTokens{i} = strsplit(data{i, 2}, ' ');
+    endfor
+    % Create a dictionary
+    dict = unique([allTokens{:}]);
+    % Load the number of terms
+    numTerms = length(dict);
 
-    frequency = frequency(:, 1:length(dict));
-    %disp(dict);
+    % Create term frequency matrix
+    tf = zeros(numDocs, numTerms);
+    % Assign value to tf matrix
+    for i = 1: numDocs
+      for j = 1:numTerms
+        tf(i, j) = sum(strcmp(allTokens{i}, dict{j}));
+      endfor
+    endfor
+    % Calculate documents frequency of each word
+    df = sum(tf > 0, 1);
+    % Calculate Inverse Document Frequency
+    idf = log(numDocs ./ df);
+    % Calculate IF-IDF
+    tfidfMatrix = tf .* idf;
 end
