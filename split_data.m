@@ -1,14 +1,10 @@
-% Calculate the number of samples in the dataset
 numSamples = height(data);
 
-% Shuffle the indices of the dataset
-rng(123); % Set random seed for reproducibility
+rng(123);
 shuffledIdx = randperm(numSamples);
 
-% Define the percentage of data to use for training
-trainPercentage = 0.8; % 80% training, 20% testing
+trainPercentage = 0.8;
 
-% Calculate the number of samples for training
 numTrainSamples = round(trainPercentage * numSamples);
  
 % Split the shuffled indices into training and testing indices
