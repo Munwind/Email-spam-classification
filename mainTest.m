@@ -62,7 +62,6 @@ for i = 1:numel(cleanedWordTokens)
             end
         end
         
-        % If it originally ended with a period, add the period back
         if ends_with_period
             result_word = result_word + ".";
         end
