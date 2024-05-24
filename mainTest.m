@@ -1,91 +1,79 @@
-function mainTest()
-    % Define prefixes and suffixes
-    suffixes = {'sses', 'ies', 'ness', 's', 'ing', 'ed', 'ful', 'ment', 'able', 'ly', 'ible', 'tion', 'ative', 'est', 'ize', 'ise', 'al', 'sion', 'er', 'est', 'e'};
-    prefixes = {'un', 'sub', 'inter', 'semi', 'anti', 'over', 'under', 'bi', 'dis', 'pre', 're', 'mis'};
+% Load email data
+data = readtable('email.csv');
+
+% Read the Message column
+documents = {'This is an example document.', 'This is another test.'};
+% Or
+% doccuments = data.Message;
+
+% Define stop words
+fileID = fopen('stopWords.txt', 'r');
+stopWordsCell = textscan(fileID, '%s', 'Delimiter', '\n');
+fclose(fileID);
+stopWords = string(stopWordsCell{1});
+
+% Convert all text to lowercase
+documents = lower(documents);
+
+% Split documents into words (tokenize)
+wordTokens = cellfun(@(doc) strsplit(doc), documents, 'UniformOutput', false);
+
+% Remove stop words
+cleanedWordTokens = cellfun(@(tokens) tokens(~ismember(tokens, stopWords)), wordTokens, 'UniformOutput', false);
+
+% Initialize processed messages
+processedMessages = cell(size(cleanedWordTokens));
+
+% Define prefixes and suffixes
+suffixes = {'sses', 'ies', 'ness', 'ing', 'ed', 'ful', 'ment', 'able', 'ly', 'ible', 'tion', 'ative', 'est', 'ize', 'ise', 'al', 'sion', 'er', 'est', 'e'};
+prefixes = {'un', 'sub', 'inter', 'semi', 'anti', 'over', 'under', 'bi', 'dis', 'pre', 're', 'mis'};
+
+% Process each document
+for i = 1:numel(cleanedWordTokens)
+    tokens = cleanedWordTokens{i};
+    processedTokens = {};
     
-    % Load the stop words 
-    stopWords = readStopWords('stopWords.txt');
-    
-    % Load the CSV file into a table
-    data = readtable('email.csv');
-    
-    % Tokenize each message in the 'Message' column
-    data.TokenizedMessage = cellfun(@(x) strsplit(x), data.Message, 'UniformOutput', false);
-
-    % Process each message
-    processedMessages = testPreprocessing(data, stopWords, prefixes, suffixes);
-
-    % Add the processed messages to the table
-    data.ProcessedMessage = processedMessages;
-
-    % new csv
-    writetable(data, 'processed_email.csv');
-
-    % Print in terminal
-    disp('Original - Processed');
-    for i = 1:height(data)
-        fprintf('%s - %s\n', data.Message{i}, data.ProcessedMessage{i});
-    end
-end
-
-% Read file stopWords.txt
-function stopWords = readStopWords(filename)
-    fileID = fopen(filename, 'r');
-    stopWords = textscan(fileID, '%s');
-    fclose(fileID);
-    stopWords = stopWords{1};
-end
-
-function processedMessages = testPreprocessing(data, stopWords, prefixes, suffixes)
-    processedMessages = cell(size(data.TokenizedMessage));
-    
-    for i = 1:numel(data.TokenizedMessage)
-        tokens = data.TokenizedMessage{i};
-        processedTokens = cell(size(tokens));
+    for k = 1:length(tokens)
+        word = tokens{k};
         
-        for k = 1:length(tokens)
-            word = tokens{k};
-            
-            % Check for stop words
-            if ismember(word, stopWords)
-                continue; % Skip this word
+        % Remove prefix
+        no_prefix = word;
+        for j = 1:length(prefixes)
+            if startsWith(no_prefix, prefixes{j})
+                no_prefix = extractAfter(no_prefix, strlength(prefixes{j}));
+                break;
             end
-            
-            % Remove prefix
-            no_prefix = word;
-            pre_removed = true;
-            while pre_removed
-                pre_removed = false;
-                for j = 1:length(prefixes)
-                    if startsWith(no_prefix, prefixes{j})
-                        no_prefix = extractAfter(no_prefix, strlength(prefixes{j}));
-                        pre_removed = true;
-                        break;
-                    end
-                end
-            end
+        end
 
-            % Remove suffix
-            result_word = no_prefix;
-            suf_removed = true;
-            while suf_removed
-                suf_removed = false;
-                for j = 1:length(suffixes)
-                    if endsWith(result_word, suffixes{j})
-                        result_word = extractBefore(result_word, strlength(result_word) - strlength(suffixes{j}) + 1);
-                        suf_removed = true;
-                        break;
-                    end
-                end
-            end
-
-            processedTokens{k} = result_word;
+        % Check if the word ends with a period
+        ends_with_period = endsWith(no_prefix, '.');
+        if ends_with_period
+            temp_word = extractBefore(no_prefix, strlength(no_prefix));
+        else
+            temp_word = no_prefix;
         end
         
-        % remove stopWords
-        processedTokens = processedTokens(~cellfun('isempty', processedTokens));
+        % Remove suffix
+        result_word = temp_word;
+        for j = 1:length(suffixes)
+            if endsWith(result_word, suffixes{j})
+                result_word = extractBefore(result_word, strlength(result_word) - strlength(suffixes{j}) + 1);
+                break;
+            end
+        end
         
-        % Store
-        processedMessages{i} = strjoin(processedTokens, ' ');
+        % If it originally ended with a period, add the period back
+        if ends_with_period
+            result_word = result_word + ".";
+        end
+
+        % Add processed word to the tokens
+        processedTokens{end+1} = char(result_word);
     end
+    
+    % Store processed message as a single string
+    processedMessages{i} = strjoin(processedTokens, ' ');
 end
+
+% Display processed messages
+disp(processedMessages);
