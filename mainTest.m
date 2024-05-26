@@ -1,10 +1,10 @@
+clc;clear;
 % Load email data
 data = readtable('email.csv');
 
-% Read the Message column
-documents = {'This is an example document.', 'This is another test.'};
-% Or
-% doccuments = data.Message;
+% Extract Category and Message columns
+categories = data.Category;
+messages = data.Message;
 
 % Define stop words
 fileID = fopen('stopWords.txt', 'r');
@@ -13,10 +13,11 @@ fclose(fileID);
 stopWords = string(stopWordsCell{1});
 
 % Convert all text to lowercase
-documents = lower(documents);
+messages = lower(messages);
+messages = regexprep(messages, '[^\w\s]', '');
 
-% Split documents into words (tokenize)
-wordTokens = cellfun(@(doc) strsplit(doc), documents, 'UniformOutput', false);
+% Split messages into words (tokenize)
+wordTokens = cellfun(@(msg) strsplit(msg), messages, 'UniformOutput', false);
 
 % Remove stop words
 cleanedWordTokens = cellfun(@(tokens) tokens(~ismember(tokens, stopWords)), wordTokens, 'UniformOutput', false);
@@ -28,7 +29,7 @@ processedMessages = cell(size(cleanedWordTokens));
 suffixes = {'sses', 'ies', 'ness', 'ing', 'ed', 'ful', 'ment', 'able', 'ly', 'ible', 'tion', 'ative', 'est', 'ize', 'ise', 'al', 'sion', 'er', 'est', 'e'};
 prefixes = {'un', 'sub', 'inter', 'semi', 'anti', 'over', 'under', 'bi', 'dis', 'pre', 're', 'mis'};
 
-% Process each document
+% Process each message
 for i = 1:numel(cleanedWordTokens)
     tokens = cleanedWordTokens{i};
     processedTokens = {};
@@ -74,5 +75,12 @@ for i = 1:numel(cleanedWordTokens)
     processedMessages{i} = strjoin(processedTokens, ' ');
 end
 
-% Display processed messages
-disp(processedMessages);
+% Combine categories with processed messages
+finalOutput = cell(numel(categories), 2);
+for i = 1:numel(categories)
+    finalOutput{i, 1} = categories{i};
+    finalOutput{i, 2} = processedMessages{i};
+end
+
+% Display final output
+disp(finalOutput);

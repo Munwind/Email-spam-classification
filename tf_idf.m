@@ -1,7 +1,6 @@
-function [tfidfMatrix, dict] = tf_idf(temp_data)
-    data = table2cell(temp_data);
+function [tfidfMatrix, dict] = tf_idf(data)
     % Exclude the first row of data
-    data = data(2:end, :);
+    data = data(1:end, :);
     % Load the number of documents
     numDocs = size(data, 1);
 
@@ -10,8 +9,9 @@ function [tfidfMatrix, dict] = tf_idf(temp_data)
 
     % Each documents will be splited into tokens, which strsplit can be replaced with tokenize
     for i = 1:numDocs
-      allTokens{i} = strsplit(data{i, 2}, ' ');
+        allTokens{i} = strsplit(data{i, 2}, ' ');
     end
+
     % Create a dictionary
     dict = unique([allTokens{:}]);
     % Load the number of terms
@@ -20,15 +20,18 @@ function [tfidfMatrix, dict] = tf_idf(temp_data)
     % Create term frequency matrix
     tf = zeros(numDocs, numTerms);
     % Assign value to tf matrix
-    for i = 1: numDocs
-      for j = 1:numTerms
-        tf(i, j) = sum(strcmp(allTokens{i}, dict{j}));
-      end
+    for i = 1:numDocs
+        for j = 1:numTerms
+            tf(i, j) = sum(strcmp(allTokens{i}, dict{j}));
+        end
     end
-    % Calculate documents frequency of each word
+
+    % Calculate document frequency of each word
     df = sum(tf > 0, 1);
+
     % Calculate Inverse Document Frequency
-    idf = log(numDocs ./ df);
-    % Calculate IF-IDF
+    idf = log10(numDocs ./ df);
+
+    % Calculate TF-IDF
     tfidfMatrix = tf .* idf;
 end
