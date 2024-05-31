@@ -50,14 +50,33 @@ fprintf('Testing Set: \n');
 fprintf('Label 0: %d\n', sum(test_label == 0));
 fprintf('Label 1: %d\n', sum(test_label == 1));
 
+%oversampling label = 1.
+num_label_0 = sum(train_label == 0);
+num_label_1 = sum(train_label == 1);
+desired_num_label_1 = round(num_label_0 / 2);
+replication_factor = ceil(desired_num_label_1 / num_label_1);
+minority_indices = find(train_label == 1);
+oversampled_minority_indices = repmat(minority_indices, replication_factor, 1);
+oversampled_minority_indices = oversampled_minority_indices(1:desired_num_label_1);
+balanced_train_indices = [find(train_label == 0); oversampled_minority_indices];
+balanced_train_indices = balanced_train_indices(randperm(length(balanced_train_indices)));
+
+train_input_optimize = train_input(balanced_train_indices, :);
+train_label_optimize = train_label(balanced_train_indices);
+new_num_train = size(train_label_optimize , 1);
+fprintf('New Training Set:\n');
+fprintf('Label 0: %d\n', sum(train_label_optimize == 0));
+fprintf('Label 1: %d\n', sum(train_label_optimize == 1));
+
 %Statistic for logistic regression model 
-tol = 1e-6;
-eta = 0.5;
-max_iter = 30000;
+tol = 1e-4;
+eta = 0.3;
+max_iter = 35000;
 
 
 %Training Process perform here
-[loss, weight] = logisticRegression(train_input, train_label, tol, eta, weight_init, max_iter);
+[loss, weight] = logisticRegression(train_input_optimize, train_label_optimize, tol, eta, weight_init, max_iter);
+
 
 %plot for training loss
 figure;
@@ -68,22 +87,31 @@ title('Loss over Iterations');
 
 %calculating the prediction value of model
 predicted_function = @(z) 1 ./ (1 + exp(-z));
-train_prediction = predicted_function(weight * train_input');
+train_prediction = predicted_function(weight * train_input_optimize');
 test_prediction = predicted_function(weight * test_input');
 
 %labeled for prediction value
-threshold = 0.5;
+threshold = 0.35;
 train_predicted_label = train_prediction >= threshold;
 train_predicted_label = train_predicted_label';
 test_predicted_label = test_prediction >= threshold;
 test_predicted_label = test_predicted_label';
 
+% Identify and print the prediction values of emails where label 1 is wrong predicted
+wrong_predicted_indices = find(test_label == 1 & test_predicted_label == 0);
+fprintf('Prediction values of wrongly predicted label 1 emails:\n');
+for i = 1:length(wrong_predicted_indices)
+    fprintf('Email %d: Prediction value = %f\n', wrong_predicted_indices(i), test_prediction(wrong_predicted_indices(i)));
+end
+
 % Evaluate the efficience of model by accuracy, f1 score, precision and
 % recall
 
 %Evaluation for training test
-[train_precision, train_recall, train_f1_score] = evaluate_metrics(train_predicted_label, train_label);
-accuracy_at_train = sum(train_predicted_label == train_label) / num_train;
+[train_precision, train_recall, train_f1_score] = evaluate_metrics(train_predicted_label, train_label_optimize);
+
+
+accuracy_at_train = sum(train_predicted_label == train_label_optimize) / new_num_train;
 fprintf('Training Set metric: \n');
 fprintf('Precision: %f\n', train_precision);
 fprintf('Recall: %f\n', train_recall);
