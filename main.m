@@ -6,14 +6,7 @@
 encodedCategories = double(strcmp(finalOutput(:, 1), 'spam'));
 
 % Feature extraction there  use TF - IDF
-[tfidfMatrix, dict] = tf_idf(finalOutput);
-
-% Compute the L2 norms for each row
-rowNormsL2 = sqrt(sum(tfidfMatrix.^2, 2));
-
-% Normalize each row by its L2 norm
-tf_idf_data = tfidfMatrix ./ rowNormsL2;
-
+[tf_idf_data,  tfMatrix, idfMatrix,dict] = tf_idf(finalOutput);
 
 numDocuments = size(tf_idf_data , 1);
 tf_idf_data = [ones(numDocuments, 1) tf_idf_data];
@@ -53,7 +46,7 @@ fprintf('Label 1: %d\n', sum(test_label == 1));
 %oversampling label = 1.
 num_label_0 = sum(train_label == 0);
 num_label_1 = sum(train_label == 1);
-desired_num_label_1 = round(num_label_0 / 2);
+desired_num_label_1 = round(num_label_0);
 replication_factor = ceil(desired_num_label_1 / num_label_1);
 minority_indices = find(train_label == 1);
 oversampled_minority_indices = repmat(minority_indices, replication_factor, 1);
@@ -69,9 +62,9 @@ fprintf('Label 0: %d\n', sum(train_label_optimize == 0));
 fprintf('Label 1: %d\n', sum(train_label_optimize == 1));
 
 %Statistic for logistic regression model 
-tol = 1e-4;
-eta = 0.3;
-max_iter = 35000;
+tol = 1e-6;
+eta = 0.003;
+max_iter = 20000;
 
 
 %Training Process perform here
@@ -91,7 +84,7 @@ train_prediction = predicted_function(weight * train_input_optimize');
 test_prediction = predicted_function(weight * test_input');
 
 %labeled for prediction value
-threshold = 0.35;
+threshold = 0.5;
 train_predicted_label = train_prediction >= threshold;
 train_predicted_label = train_predicted_label';
 test_predicted_label = test_prediction >= threshold;
@@ -109,8 +102,6 @@ end
 
 %Evaluation for training test
 [train_precision, train_recall, train_f1_score] = evaluate_metrics(train_predicted_label, train_label_optimize);
-
-
 accuracy_at_train = sum(train_predicted_label == train_label_optimize) / new_num_train;
 fprintf('Training Set metric: \n');
 fprintf('Precision: %f\n', train_precision);

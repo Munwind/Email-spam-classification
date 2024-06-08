@@ -1,4 +1,4 @@
-function [tfidfMatrix, dict] = tf_idf(data)
+function [tfidfMatrix, tf, idf, dict] = tf_idf(data)
     % Exclude the first row of data
     data = data(1:end, :);
     % Load the number of documents
