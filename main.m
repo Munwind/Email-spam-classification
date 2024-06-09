@@ -70,7 +70,6 @@ max_iter = 20000;
 %Training Process perform here
 [loss, weight] = logisticRegression(train_input_optimize, train_label_optimize, tol, eta, weight_init, max_iter);
 
-
 %plot for training loss
 figure;
 plot(loss);

@@ -1,3 +1,4 @@
+
 load('matlab.mat');
 emails_data = {
     "spam", 'Congratulations! You win a free vacation! Click here to claim your prize now! ';%1
@@ -35,11 +36,17 @@ new_data_message = emails_data(:, 2);
 new_data_message = lower(new_data_message);
 new_data_message = regexprep(new_data_message, '[^\w\s]', '');
 
+fileID = fopen('stopWords.txt', 'r');
+stopWordsCell = textscan(fileID, '%s', 'Delimiter', '\n');
+fclose(fileID);
+stopWords = string(stopWordsCell{1});
+
 % Split messages into words and remove stop words (tokenize)
 new_data_wordTokens = cellfun(@(msg) strsplit(msg), new_data_message, 'UniformOutput', false);
 clean_new_data_Tokens = cellfun(@(tokens) tokens(~ismember(tokens, stopWords)), new_data_wordTokens, 'UniformOutput', false);
 
 newdata_processedMessages = cell(size(clean_new_data_Tokens));
+%newdata_processedMessages = cell(size(clean_new_data_Tokens));
 % Process each message
 for i = 1:numel(clean_new_data_Tokens)
     new_data_tokens = clean_new_data_Tokens{i};
@@ -92,7 +99,8 @@ fprintf('Rate at classify ham email: %.2f%%\n', ham_predicted_accuracy * 100);
 %Enter input now please my friend
 while(true)
     input_text = input('Enter the email content(quit to end your work): ', 's');
-    if strcmpi(lower(input_text), 'quit')
+    process_input = lower(input_text);
+    if strcmpi(process_input, 'quit')
         break;
     end
     predict_email_label(input_text);
