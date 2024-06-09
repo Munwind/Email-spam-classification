@@ -1,6 +1,6 @@
-
+load('matlab.mat');
 emails_data = {
-    "spam", 'Congratulations! You win a free vacation! Click here to claim your prize now!';%1
+    "spam", 'Congratulations! You win a free vacation! Click here to claim your prize now! ';%1
     "spam", 'Get rich easily with this amazing investment opportunity! Only 100$ for being a great business and achieve a millionaire life!'; %2
     "spam", 'This is the second time we have tried to contact you. You have won the $4000. 2 claim is easy, just call 091828328387'; %3
     "spam", 'You''ve been selected as the winner of our monthly sweepstakes! Click the link below to claim your $1000 gift card. Hurry, this offer expires in 24 hours!'; %4
@@ -76,6 +76,8 @@ new_data_label = cellfun(@(label) strcmp(label, 'spam'), new_data_label);
 threshold = 0.5; % Set the threshold
 new_predict_labels = new_prediction >= threshold;
 accuracy = sum(new_predict_labels == new_data_label) / num_newDocuments;
+spam_predicted_accuracy = sum(new_predict_labels == 1 & new_data_label == 1) / sum(new_data_label ==1);
+ham_predicted_accuracy = sum(new_predict_labels == 0 & new_data_label == 0) / sum(new_data_label == 0);
 
 % Display final output with predicted labels and accuracy
 disp("Final Output with Predicted Labels and Accuracy:");
@@ -83,3 +85,15 @@ for i = 1:numel(new_predict_labels)
     fprintf('Message %d - Reality Label: %d, Predicted Label: %d\n', i, new_data_label(i), new_predict_labels(i));
 end
 fprintf('Accuracy: %.2f%%\n', accuracy * 100);
+fprintf('Rate at classify spam email: %.2f%%\n', spam_predicted_accuracy * 100);
+fprintf('Rate at classify ham email: %.2f%%\n', ham_predicted_accuracy * 100);
+
+
+%Enter input now please my friend
+while(true)
+    input_text = input('Enter the email content(quit to end your work): ', 's');
+    if strcmpi(lower(input_text), 'quit')
+        break;
+    end
+    predict_email_label(input_text);
+end

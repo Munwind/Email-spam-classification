@@ -1,0 +1,18 @@
+//Spam email
+URGENT: Your account has been compromised. Please click the link "http://luadao.com" immediately to secure your account.
+Congratulations! You've won a $1,000 gift card! Click here to claim your prize now
+Free vacation to Bahamas for the first lucky 100 people who contact to 0929289288. don't forget it, you can be the lucky one!
+Win a brand new iPhone 15! Click here to participate in the survey!
+You've been pre-approved for a $5000 loan. Contact 03938383983 or click to link "http:/munwind.com" now!
+Congratulations, you win a free IPAD Gen 14, please click to this link to claim this.
+Free tickets for FA cup final, immediately contact 0829289282 to claim this because of limited slot
+
+
+//Ham email
+Hi, just checking in to see if you're available for our meeting tomorrow at 3 PM.
+Don't forget to bring the reports to the office tomorrow. Thanks!
+URGENT: Your account has been compromised. Please immediately change your password for better security!
+Tomorrow is deadline for Scientific Computing, please complete your task and submit in time!
+Happy Birthday! Hope you have a fantastic day!
+Hey, next week I will finish all my exam, let's watch movie and play sport together.
+I have finished OOP projects, it's time to play video game now
