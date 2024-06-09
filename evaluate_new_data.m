@@ -1,4 +1,4 @@
-
+load('logistic_regression_model.mat', 'weight', 'dict')
 emails_data = {
     "spam", 'Congratulations! You win a free vacation! Click here to claim your prize now!';%1
     "spam", 'Get rich easily with this amazing investment opportunity! Only 100$ for being a great business and achieve a millionaire life!'; %2
@@ -35,11 +35,17 @@ new_data_message = emails_data(:, 2);
 new_data_message = lower(new_data_message);
 new_data_message = regexprep(new_data_message, '[^\w\s]', '');
 
+fileID = fopen('stopWords.txt', 'r');
+stopWordsCell = textscan(fileID, '%s', 'Delimiter', '\n');
+fclose(fileID);
+stopWords = string(stopWordsCell{1});
+
 % Split messages into words and remove stop words (tokenize)
 new_data_wordTokens = cellfun(@(msg) strsplit(msg), new_data_message, 'UniformOutput', false);
 clean_new_data_Tokens = cellfun(@(tokens) tokens(~ismember(tokens, stopWords)), new_data_wordTokens, 'UniformOutput', false);
 
 newdata_processedMessages = cell(size(clean_new_data_Tokens));
+%newdata_processedMessages = cell(size(clean_new_data_Tokens));
 % Process each message
 for i = 1:numel(clean_new_data_Tokens)
     new_data_tokens = clean_new_data_Tokens{i};
