@@ -1,32 +1,45 @@
-# Group12_Project
-## Email Classification Project
+# Email Classification Project
 
 This project involves developing a machine learning model to classify emails. The project includes several scripts to preprocess data, split the dataset, compute term frequency-inverse document frequency (TF-IDF) values, train the model using logistic regression, and evaluate its performance.
 
-### Project Structure
+## Project Structure
 The project contains the following files:
 1. **tf_idf.m**: Script to compute the TF-IDF values for the email dataset.
 2. **testPreprocessing.m**: Script to preprocess the email data, including cleaning and preparing the text for further analysis.
-3. **split_data.m**: Script to split the email dataset into training and testing sets.
-4. **predict_email_label.m**: Script to predict the label of an email using the trained model.
-5. **evaluate_metrics.m**: Script to evaluate the performance of the model using various metrics.
-6. **evaluate_new_data.m**: Script to evaluate the model on new email data.
-7. **logisticRegression.m**: Script to train a logistic regression model on the email dataset.
-8. **main.m**: Main script to run the entire email classification pipeline.
-9. **Script.m**: A placeholder for any additional script or wrapper.
-10. **stopWord.txt**: A text file containing stop words to be removed during preprocessing.
-11. **vectorize_new_emails.m**: Script to vectorize new email data for prediction.
-12. **email.csv**: The dataset containing emails and their labels.
+3. **predict_email_label.m**: Script to predict the label of an email using the trained model.
+4. **evaluate_metrics.m**: Script to evaluate the performance of the model using various metrics.
+5. **evaluate_new_data.m**: Script to evaluate the model on new email data.
+6. **logisticRegression.m**: Script to train a logistic regression model on the email dataset.
+7. **main.m**: Main script to run the entire email classification pipeline.
+8. **stopWord.txt**: A text file containing stop words to be removed during preprocessing.
+9. **vectorize_new_emails.m**: Script to vectorize new email data for prediction.
+10. **email.csv**: The dataset containing emails and their labels.
 
 
-### Requirements
+## Requirements
 - MATLAB or Octave
 
-### Installation
+## Installation
 1. Clone the repository to your local machine.
 2. Ensure MATLAB or Octave is installed on your system.
 
-### Usage
+## Usage
+### Run main model
+
+Run _main.m_ to execute the entire email classification pipeline.
+
+```
+main
+```
+### Run demo
+
+Run _evaluate_new_data.m_ to evaluate the model on new email data.
+
+```
+evaluate_new_data
+```
+
+### Configuration
 
 1. **Data Preprocessing:**
 Run _testPreprocessing.m_ to preprocess the email data. This script will clean the text and prepare it for feature extraction.
@@ -70,26 +83,13 @@ Run _evaluate_metrics.m_ to evaluate the performance of the model using various 
 evaluate_metrics
 ```
 
-7. **Evaluating New Data:**
-Run _evaluate_new_data.m_ to evaluate the model on new email data.
-
-```
-evaluate_new_data
-```
-
-8. **Vectorizing New Emails:**
+7. **Vectorizing New Emails:**
 Run _vectorize_new_emails.m_ to vectorize new email data for prediction.
 
 ```
 vectorize_new_emails
 ```
-9. **Predicting Email Labels:**
-Run _main.m_ to execute the entire email classification pipeline.
 
-```
-main
-```
-
-### Data
+## Data
 - **stopWord.txt**: Contains stop words that are removed during the preprocessing stage.
 - **email.csv**: Contains the email dataset with emails and their corresponding labels.
